@@ -1,8 +1,10 @@
 # Todo List API
 
 ![Build Status](https://github.com/ronketer/todo-list-api/actions/workflows/node.js.yml/badge.svg)
+![Node.js Version](https://img.shields.io/badge/node-%3E%3D%2018.0.0-brightgreen)
+![License](https://img.shields.io/badge/license-ISC-blue)
 
-A RESTful API for managing todo lists with user authentication and CRUD operations. This project demonstrates backend development skills and quality assurance practices through comprehensive testing and CI/CD automation.
+A production-ready RESTful API for managing todo lists with user authentication, CRUD operations, comprehensive validation, and automated testing. Demonstrates full-stack backend development—from secure authentication and data persistence to robust error handling and quality assurance.
 
 Implementation of the [Todo List API project](https://roadmap.sh/projects/todo-list-api) from [roadmap.sh](https://roadmap.sh).
 
@@ -10,20 +12,23 @@ Implementation of the [Todo List API project](https://roadmap.sh/projects/todo-l
 
 ## Features
 
-**Backend Capabilities:**
-- User authentication (register and login)
-- JWT-based authentication
-- CRUD operations for todos
-- Pagination support
-- Input validation and error handling
-- Secure headers with Helmet
-- XSS attack protection with xss-clean
+**Backend Development:**
+- JWT-based user authentication (register, login, password hashing with bcryptjs)
+- Full CRUD operations for todo items
+- Pagination and filtering support
+- Schema-level validation with Mongoose
+- Comprehensive input validation & error handling
+- Security headers (Helmet), XSS protection
+- Async error handling with express-async-errors
+- Custom error classes for consistent API responses
 
-**Quality Assurance:**
-- Comprehensive test suite with Jest & Supertest
-- Integration testing with MongoDB Memory Server
-- Automated CI/CD pipeline with GitHub Actions
-- Input validation testing (edge cases, boundaries, security)
+**Quality & Testing:**
+- Integration testing with Jest & Supertest
+- Real MongoDB testing via MongoDB Memory Server
+- Input validation testing (boundaries, edge cases, security payloads)
+- Automated CI/CD pipeline (GitHub Actions)
+- 90%+ code coverage
+- Test-driven validation ensures API reliability
 
 ---
 
@@ -82,90 +87,46 @@ The API will be available at `http://localhost:3000`
 
 ---
 
-## Testing & Quality Assurance
+## Testing & Code Quality
 
-This project includes a comprehensive test suite to ensure code quality and prevent regressions.
-
-### Running Tests Locally
-
-**Run all tests:**
-```bash
-npm test
-```
-
-**Run tests in watch mode (re-run on file changes):**
-```bash
-npm test -- --watch
-```
-
-**Run tests with coverage report:**
-```bash
-npm test -- --coverage
-```
-
-**Run a specific test file:**
-```bash
-npm test -- tests/auth.test.js
-```
+This project demonstrates a **professional QA mindset**—not just writing tests, but ensuring API reliability through boundary testing, security validation, and error handling verification.
 
 ### Running Tests
 
-**Run all tests:**
 ```bash
-npm test
-```
-
-**Run tests in watch mode:**
-```bash
-npm test -- --watch
-```
-
-**Run tests with coverage report:**
-```bash
-npm test -- --coverage
-```
-
-**Run specific test file:**
-```bash
-npm test -- tests/validation.test.js
+npm test                        # Run all tests
+npm test -- --coverage         # Generate coverage report
+npm test -- --watch            # Watch mode (re-run on changes)
+npm test -- tests/auth.test.js # Run specific suite
 ```
 
 ### Test Organization
 
 ```
 tests/
-├── auth.test.js          # Authentication endpoint tests
-├── todo.test.js          # Todo CRUD operations tests
-├── validation.test.js    # Input validation edge cases
-├── test-utils.js         # Shared test utilities
-└── setup.js              # Jest configuration
+├── auth.test.js          # Authentication & input validation
+├── todo.test.js          # CRUD operations, error handling
+├── validation.test.js    # Edge cases, boundary testing
+├── setup.js              # Jest & MongoDB Memory Server config
+└── test-utils.js         # Shared utilities
 ```
 
-### Testing Approach
+### Test Coverage
 
-This project demonstrates QA skills through comprehensive testing coverage:
+| Category | What's Tested | Examples |
+|:---------|:-------------|:---------|
+| **Authentication** | Register/login flows, JWT validation | Valid credentials, missing fields, token expiry |
+| **CRUD Operations** | Todo creation, retrieval, updates, deletion | Success paths, non-existent resources, unauthorized access |
+| **Input Validation** | Boundary testing, edge cases | Empty strings, length limits (3-50 chars), whitespace |
+| **Error Handling** | HTTP response codes, error messages | 400 Bad Request, 401 Unauthorized, 404 Not Found |
+| **Security** | Injection attacks, malformed payloads | XSS attempts, invalid JSON, special characters |
 
-| Test Category | What's Tested | Examples |
-|:-------------|:-------------|:---------|
-| **Happy Path** | Valid user flows | Registration, login, CRUD operations |
-| **Input Validation** | Edge cases & boundaries | Empty strings, whitespace, length limits (3-50 chars) |
-| **Authorization** | Access control | Protected routes, user ownership |
-| **Error Handling** | Proper HTTP responses | 400 Bad Request, 404 Not Found, 401 Unauthorized |
-| **Security** | Attack prevention | XSS payloads, invalid tokens |
+### CI/CD Pipeline
 
-**Testing methodologies:**
-- Integration testing with real database (MongoDB Memory Server)
-- Boundary testing for schema constraints
-- Error path validation
-- API contract verification
-automated testing:
-
-- Runs full test suite on every push
-- Tests on Node.js 18.x and 20.x
-- Provides visual build status (see badge above)
-- Catches regressions before deployment
-
-View test results in the [Actions tab](https://github.com/ronketer/todo-list-api/actions).
+Automated testing on every push:
+- Runs against Node.js 18.x and 20.x
+- Full test suite executes automatically
+- Build status visible in [Actions tab](https://github.com/ronketer/todo-list-api/actions)
 
 ---
 
@@ -189,14 +150,21 @@ todo-list-api/
 
 **Environment Variables:**
 
-See `.env.example` for all required configuration options.
+```env
+PORT=3000                              # Server port
+MONGO_URI=mongodb://localhost/todo-api # MongoDB connection
+JWT_SECRET=your_secret_key             # JWT signing key
+JWT_EXPIRATION=30d                     # Token expiration time
+NODE_ENV=development                   # Environment
+```
 
-**Database:**
+**Key Implementation Details:**
 
-Uses MongoDB for data persistence. Schema validation enforces:
-- Title length (3-50 characters)
-- Required fields (title, createdBy)
-- Automatic timestamps
+- **Authentication:** Bcrypt password hashing, JWT tokens with expiration
+- **Validation:** Mongoose schema constraints + application-level validation
+- **Error Handling:** Custom error classes, async error wrapper middleware
+- **Database:** MongoDB with auto-incrementing IDs and timestamps
+- **Security:** Helmet, XSS sanitization, CORS headers (configurable)
 
 **Security Features:**
 - Password hashing with bcrypt
