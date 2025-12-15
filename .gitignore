@@ -1,0 +1,39 @@
+# Environment variables
+# IMPORTANT: Never commit .env files - they contain sensitive credentials like:
+# - Database connection strings with passwords
+# - JWT secrets
+# - API keys
+# - Database usernames and URLs
+.env
+.env.local
+.env.*.local
+
+# Node modules
+# All dependencies installed via npm should not be committed
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Build outputs
+dist/
+build/
+
+# Testing
+coverage/
+.nyc_output/
+
+# Logs
+logs/
+*.log
+
+ 
+docs/

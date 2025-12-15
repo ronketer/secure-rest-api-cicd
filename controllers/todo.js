@@ -2,10 +2,43 @@ const { StatusCodes } = require('http-status-codes');
 const Todo = require('../models/Todo');
 const { NotFoundError, BadRequestError, ForbiddenError } = require('../errors/index');
 
+// Validate todo title against schema constraints (minlength: 3, maxlength: 50)
+const validateTodoInput = (title) => {
+  if (title === undefined) return;
+
+  if (typeof title !== 'string') {
+    throw new BadRequestError('Title must be a string');
+  }
+  
+  const trimmedTitle = title.trim();
+  
+  if (trimmedTitle.length === 0) {
+    throw new BadRequestError('Title cannot be only whitespace');
+  }
+  
+  if (trimmedTitle.length < 3) {
+    throw new BadRequestError('Title must be at least 3 characters long');
+  }
+  
+  if (trimmedTitle.length > 50) {
+    throw new BadRequestError('Title cannot exceed 50 characters');
+  }
+  
+  return trimmedTitle;
+};
+
 const createTodo = async (req, res) => {
-  // once in this route user is authenticated 
-  // todo: add trycatch block : datalevel validation and request level validaiton 
+  const { title, description } = req.body;
+  
+  const validTitle = validateTodoInput(title);
+  
+  if (!validTitle) {
+     throw new BadRequestError('Title is required');
+  }
+
   req.body.createdBy = req.user.userId;
+  req.body.title = validTitle;
+  
   const todo = await Todo.create({ ...req.body });
 
   res.status(StatusCodes.CREATED).json({
@@ -24,16 +57,22 @@ const updateTodo = async (req, res) => {
     throw new BadRequestError('At least one of Title or Description must be provided for update');
   }
 
+  let updateData = { description };
+  
+  if (title) {
+    updateData.title = validateTodoInput(title);
+  }
+
   const todo = await Todo.findOneAndUpdate(
     { id: todoId, createdBy: userId },
-    { title, description },
-    { new: true }
+    updateData,
+    { new: true, runValidators: true }
   );
 
   if (!todo) {
     throw new NotFoundError(`No Todo with id ${todoId}`);
   }
-  // user can only edit their own todo
+
   if(!todo.createdBy.equals(userId)) {
     throw new ForbiddenError('Forbidden');
   }
@@ -81,7 +120,6 @@ const getAllTodo = async (req, res) => {
   const skip = (page - 1) * limit;
 
   const todos = await Todo.find({ createdBy: userId })
-  // sort first, than skip , than limit results to the value of limit.
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit);
