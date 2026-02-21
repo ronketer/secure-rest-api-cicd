@@ -1,6 +1,8 @@
 # Secure REST API & CI/CD Pipeline
 
-[![CI Pipeline](https://github.com/ronketer/secure-rest-api-cicd/actions/workflows/node.js.yml/badge.svg)](https://github.com/ronketer/secure-rest-api-cicd/actions) [![Coverage Threshold](https://img.shields.io/badge/Coverage->80%25-brightgreen.svg)](https://github.com/ronketer/secure-rest-api-cicd/actions)
+![CI Pipeline](https://github.com/ronketer/secure-rest-api-cicd/actions/workflows/node.js.yml/badge.svg) 
+![Coverage Threshold](https://img.shields.io/badge/Coverage_Threshold-≥80%25-brightgreen)
+![Security](https://img.shields.io/badge/Security-JWT_Auth-blue)
 
 A robust, production-ready RESTful API built with Node.js and Express. This project demonstrates secure backend architecture, automated deployment workflows, and high-coverage integration testing.
 
