@@ -6,16 +6,28 @@ module.exports = {
     '^.+\\.js$': 'babel-jest',
   },
   setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
+  
+  // THE FIX: Only measure coverage in these specific folders!
   collectCoverageFrom: [
-    '**/*.js',
-    '!**/node_modules/**',
-    '!**/tests/**',
-    '!jest.config.js',
+    'controllers/**/*.js',
+    'middleware/**/*.js',
+    'models/**/*.js',
+    'routes/**/*.js'
   ],
+  
   forceExit: true,
   detectOpenHandles: true,
   testTimeout: 30000,
-  // Additional configuration for better test reporting
   verbose: true,
-  bail: false, // Don't stop on first test failure
+  bail: false,
+  
+  // Our 80% enforcement
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80
+    }
+  }
 };

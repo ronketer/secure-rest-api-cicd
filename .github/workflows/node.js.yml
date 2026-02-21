@@ -1,4 +1,3 @@
-
 name: Node.js CI
 
 on:
@@ -23,25 +22,36 @@ jobs:
       - name: Checkout repository code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Full history for better analysis
+          fetch-depth: 0
+          
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'  # Cache npm dependencies for faster builds
+          cache: 'npm'
+          
       - name: Install dependencies
         run: npm ci
         env:
           NODE_ENV: test
-      - name: Run test suite
+          
+      - name: Run test suite & enforce coverage
         run: npm test -- --coverage --passWithNoTests
         env:
           NODE_ENV: test
           MONGO_URI: 'mongodb://localhost:27017/todo-list-api-test'
           JWT_SECRET: 'test-secret-key'
           PORT: 3001
+          
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report-node-${{ matrix.node-version }}
+          path: coverage/
+          
       - name: Test Results Summary
-        if: always()  # Run even if tests fail
+        if: always()
         run: echo "✅ Test execution completed. Check logs above for results."
 
   lint:
@@ -63,4 +73,4 @@ jobs:
       
       - name: Check for unused imports
         run: npm test -- --listTests
-        continue-on-error: true  # Don't fail workflow if this fails
+        continue-on-error: true
